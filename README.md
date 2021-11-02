@@ -13,7 +13,7 @@ xtakac07
 -matplotlib	3.4.3	
 -opencv-contrib-python	4.5.2.54
 -opencv-python	4.5.2.54	
--pip	21.1.2	
+-pip	LATESTS
 
 -Pillow	8.3.2	
 -absl-py	0.14.0	
