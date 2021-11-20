@@ -5,20 +5,15 @@ const canvas = document.querySelector('.webgl')
 const scene = new THREE.Scene()
 var clock = new THREE.Clock()
 var mixer
+var gltfChar
+var isTalking = false
 
 // GLTF Loader
 const loader = new GLTFLoader()
-loader.load('assets/chest00.gltf', function(gltf){
+loader.load('assets/Markus.gltf', function(gltf){
     console.log(gltf)
-    const chest = gltf.scene
-    scene.add(chest)
-
-    // Play Animation
-    mixer = new THREE.AnimationMixer(chest)
-    const clips = gltf.animations
-    const clip = THREE.AnimationClip.findByName( clips, 'OpenAnim' )
-    const action = mixer.clipAction( clip )
-    action.play()
+    gltfChar = gltf
+    scene.add(gltf.scene)
 
 }, function(xhr){
     console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
@@ -61,3 +56,20 @@ function animate(){
 
 animate()
 
+// onKeyDown
+document.addEventListener("keydown", onDocumentKeyDown, false)
+function onDocumentKeyDown(event) {
+    var keyCode = event.which
+    if(keyCode == 32){
+        // Play Animation
+        mixer = new THREE.AnimationMixer(gltfChar.scene)
+        const clips = gltfChar.animations
+        const clip = THREE.AnimationClip.findByName( clips, 'talk_anim' )
+        const action = mixer.clipAction( clip )
+        if(isTalking)
+            action.stop()
+        else
+            action.play()
+        isTalking = !isTalking
+    }
+}
