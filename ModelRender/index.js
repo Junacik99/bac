@@ -4,8 +4,7 @@ import {GLTFLoader} from './three.js-master/examples/jsm/loaders/GLTFLoader.js'
 const canvas = document.querySelector('.webgl')
 const scene = new THREE.Scene()
 var clock = new THREE.Clock()
-var mixer
-var gltfChar
+var mixer, gltfChar
 var isTalking = false
 
 // GLTF Loader
@@ -60,7 +59,10 @@ animate()
 document.addEventListener("keydown", onDocumentKeyDown, false)
 function onDocumentKeyDown(event) {
     var keyCode = event.which
-    if(keyCode == 32){
+    const spaceKey = 32
+    const rightArrowKey = 39
+    const leftArrowKey = 37
+    if(keyCode == spaceKey){
         // Play Animation
         mixer = new THREE.AnimationMixer(gltfChar.scene)
         const clips = gltfChar.animations
@@ -71,5 +73,21 @@ function onDocumentKeyDown(event) {
         else
             action.play()
         isTalking = !isTalking
+    }
+
+    // Rotate Head
+    if(keyCode == rightArrowKey){
+        scene.traverse(function (object) {
+            if (object.isMesh) {
+                object.skeleton.bones[1].rotation.y += 0.1
+            }
+        });
+    }
+    if(keyCode == leftArrowKey){
+        scene.traverse(function (object) {
+            if (object.isMesh) {
+                object.skeleton.bones[1].rotation.y -= 0.1
+            }
+        });
     }
 }
