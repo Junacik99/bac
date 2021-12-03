@@ -8,7 +8,7 @@ xtakac07
 ### Face Tracking
 -Python 3.8
 
--mediapipe	0.8.5	
+-mediapipe	0.8.9	
 -numpy	1.21.2
 -matplotlib	3.4.3	
 -opencv-contrib-python	4.5.2.54
