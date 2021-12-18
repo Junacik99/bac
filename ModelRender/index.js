@@ -7,6 +7,44 @@ var clock = new THREE.Clock()
 var mixer, gltfChar
 let clips
 var isTalking = false
+let baseRot
+var gap = 0.0
+
+///////////////////////////////////////////////////////
+// WebSocket
+let socket = new WebSocket("ws://127.0.0.1:8765");
+
+socket.onopen = function(e) {
+    console.log('Connection to ws server established')
+    // socket.send("My name is John");
+};
+
+socket.onmessage = function(event) {
+  //alert(`[message] Data received from server: ${event.data}`);
+  console.log(`${event.data}`)
+  gap = parseFloat(event.data)
+  scene.traverse(function (object) {
+    if (object.isMesh) {
+        object.skeleton.getBoneByName("Bip001_Jaw_081").rotation.x = baseRot + gap*4
+    }
+});
+};
+
+socket.onclose = function(event) {
+  if (event.wasClean) {
+    alert(`[close] Connection closed cleanly, code=${event.code} reason=${event.reason}`);
+  } else {
+    // e.g. server process killed or network down
+    // event.code is usually 1006 in this case
+    alert('[close] Connection died');
+  }
+};
+
+socket.onerror = function(error) {
+  alert(`[error] ${error.message}`);
+};
+
+
 
 // GLTF Loader
 const loader = new GLTFLoader()
@@ -18,8 +56,14 @@ loader.load('assets/ruby.gltf', function(gltf){
     mixer = new THREE.AnimationMixer(gltfChar.scene)
     clips = gltfChar.animations
 
+    scene.traverse(function (object) {
+        if (object.isMesh) {
+            baseRot = object.skeleton.getBoneByName("Bip001_Jaw_081").rotation.x
+        }
+    });
+
 }, function(xhr){
-    console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
+    //console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
 }, function(error){
     console.log(error)
 })
@@ -59,6 +103,8 @@ function animate(){
 
 animate()
 
+
+
 // onKeyDown
 document.addEventListener("keydown", onDocumentKeyDown, false)
 function onDocumentKeyDown(event) {
@@ -84,6 +130,11 @@ function onDocumentKeyDown(event) {
             action_closed.stop()
             action_open.crossFadeTo(action_closed, 0.5, false).play()
         }
+        scene.traverse(function (object) {
+            if (object.isMesh) {
+                console.log(object.skeleton.getBoneByName("Bip001_Jaw_081").rotation.x)
+            }
+        });
         isTalking = !isTalking
     }
 
@@ -110,3 +161,4 @@ function onDocumentKeyDown(event) {
     if(keyCode == downKey)
         camera.position.y -= 0.5
 }
+
