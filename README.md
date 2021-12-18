@@ -30,3 +30,7 @@ xtakac07
 ### Model Renderer
 -Three.js https://threejs.org/ 
 -Live Server (VS Code extension for opening html page)
+
+### Websocket Server
+-asyncio
+-websockets
