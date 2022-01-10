@@ -27,6 +27,8 @@ xtakac07
 -six	1.16.0	
 -wheel	0.36.2
 
+- uv map: https://raw.githubusercontent.com/google/mediapipe/a908d668c730da128dfa8d9f6bd25d519d006692/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+
 ### Model Renderer
 -Three.js https://threejs.org/ 
 -Live Server (VS Code extension for opening html page)
