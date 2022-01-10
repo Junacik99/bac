@@ -9,6 +9,8 @@ let clips
 var isTalking = false
 let baseRot
 var gap = 0.0
+const bone_jaw = "Bip001_Jaw_081" // Name of the jaw bone in gltf (mouth open)
+const bone_head = "Bip001_Head_011" // Name of the head bone (rotate head)
 
 ///////////////////////////////////////////////////////
 // WebSocket
@@ -22,10 +24,13 @@ socket.onopen = function(e) {
 socket.onmessage = function(event) {
   //alert(`[message] Data received from server: ${event.data}`);
   console.log(`${event.data}`)
-  gap = parseFloat(event.data)
+  let msg = JSON.parse(event.data)
+  gap = msg.gap
   scene.traverse(function (object) {
     if (object.isMesh) {
-        object.skeleton.getBoneByName("Bip001_Jaw_081").rotation.x = baseRot + gap*4
+        object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*4
+        object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot -3.14159
+        //console.log(object.skeleton.getBoneByName(bone_head).rotation.z)
     }
 });
 };
@@ -58,7 +63,7 @@ loader.load('assets/ruby.gltf', function(gltf){
 
     scene.traverse(function (object) {
         if (object.isMesh) {
-            baseRot = object.skeleton.getBoneByName("Bip001_Jaw_081").rotation.x
+            baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
         }
     });
 
@@ -132,7 +137,7 @@ function onDocumentKeyDown(event) {
         }
         scene.traverse(function (object) {
             if (object.isMesh) {
-                console.log(object.skeleton.getBoneByName("Bip001_Jaw_081").rotation.x)
+                console.log(object.skeleton.getBoneByName(bone_jaw).rotation.x)
             }
         });
         isTalking = !isTalking
@@ -142,7 +147,7 @@ function onDocumentKeyDown(event) {
     if(keyCode == rightArrowKey){
         scene.traverse(function (object) {
             if (object.isMesh) {
-                object.skeleton.getBoneByName("Bip001_Head_011").rotation.z += 0.01
+                object.skeleton.getBoneByName(bone_head).rotation.z += 0.01
             }
         });
     }
@@ -150,7 +155,7 @@ function onDocumentKeyDown(event) {
         scene.traverse(function (object) {
             if (object.isMesh) {
                 //object.skeleton.bones[1].rotation.y -= 0.1
-                object.skeleton.getBoneByName("Bip001_Head_011").rotation.z -= 0.01
+                object.skeleton.getBoneByName(bone_head).rotation.z -= 0.01
             }
         });
     }
