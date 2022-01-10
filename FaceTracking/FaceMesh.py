@@ -26,8 +26,8 @@ cap = cv2.VideoCapture(mode)
 prevTime = 0
 
 # Identify landmarks indices
-lips_upper = 0
-lips_bottom = 17
+lips_upper = 13 #0
+lips_bottom = 14 #17
 
 with mp_face_mesh.FaceMesh(
     min_detection_confidence=0.5, 
@@ -57,12 +57,12 @@ with mp_face_mesh.FaceMesh(
       for face_landmarks in results.multi_face_landmarks:
         # Calculate how big is gap between lips
         gap = abs(face_landmarks.landmark[lips_upper].y - face_landmarks.landmark[lips_bottom].y)
-        if gap > 0.07:
-          # Send data to ws server
-          try:
-            asyncio.run(ws_send(gap))
-          except ConnectionRefusedError:
-            print('WS Server is down')
+        
+        # Send data to ws server
+        try:
+          asyncio.run(ws_send(gap))
+        except ConnectionRefusedError:
+          print('WS Server is down')
 
         mp_drawing.draw_landmarks(
             image=image,
