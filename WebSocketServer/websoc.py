@@ -19,6 +19,7 @@ async def msg_handler(websocket):
         
 
 async def main():
+    print("Starting websocket server")
     server1 = await websockets.serve(msg_handler, '', 8765)
     await asyncio.gather(server1.wait_closed())
 
