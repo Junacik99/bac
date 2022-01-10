@@ -7,7 +7,10 @@ import mediapipe as mp
 mp_drawing = mp.solutions.drawing_utils
 mp_face_mesh = mp.solutions.face_mesh
 import time
+
+import json # for messages
 ##################################
+# WebSocket Client
 import asyncio
 import websockets
 
@@ -15,8 +18,6 @@ async def ws_send(message):
     async with websockets.connect("ws://localhost:8765") as websocket:
         await websocket.send(str(message))
         await websocket.recv()
-
-
 ######################################
 
 ## For webcam input:
@@ -28,6 +29,8 @@ prevTime = 0
 # Identify landmarks indices
 lips_upper = 13 #0
 lips_bottom = 14 #17
+face_upper = 10
+face_bottom = 152
 
 with mp_face_mesh.FaceMesh(
     min_detection_confidence=0.5, 
@@ -57,10 +60,13 @@ with mp_face_mesh.FaceMesh(
       for face_landmarks in results.multi_face_landmarks:
         # Calculate how big is gap between lips
         gap = abs(face_landmarks.landmark[lips_upper].y - face_landmarks.landmark[lips_bottom].y)
+        # Calculate head rotation
+        rot = face_landmarks.landmark[face_upper].x - face_landmarks.landmark[face_bottom].x
+        msg = json.dumps({'gap':gap, 'rot':rot})
         
         # Send data to ws server
         try:
-          asyncio.run(ws_send(gap))
+          asyncio.run(ws_send(msg))
         except ConnectionRefusedError:
           print('WS Server is down')
 
