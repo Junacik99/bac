@@ -11,6 +11,12 @@ let baseRot
 var gap = 0.0
 const bone_jaw = "Bip001_Jaw_081" // Name of the jaw bone in gltf (mouth open)
 const bone_head = "Bip001_Head_011" // Name of the head bone (rotate head)
+const bone_eye_L = "Bip001_Eye_L_0123" // Irises
+const bone_eye_R = "Bip001_Eye_R_0124"
+const bone_eyelid_L = "Bip001_EyelidUp_L_0125"
+const bone_eyelid_R = "Bip001_EyelidUp_R_0129"
+let base_blink_L
+let base_blink_R
 
 ///////////////////////////////////////////////////////
 // WebSocket
@@ -23,14 +29,27 @@ socket.onopen = function(e) {
 
 socket.onmessage = function(event) {
   //alert(`[message] Data received from server: ${event.data}`);
-  console.log(`${event.data}`)
+  //console.log(`${event.data}`)
   let msg = JSON.parse(event.data)
   gap = msg.gap
   scene.traverse(function (object) {
     if (object.isMesh) {
         object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*4
+
         object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot -3.14159
-        //console.log(object.skeleton.getBoneByName(bone_head).rotation.z)
+        object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod +0.7
+        object.skeleton.getBoneByName(bone_head).rotation.y = -msg.turn
+
+        if(msg.blinkL < 0.3) // then blink left
+            object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
+        else
+            object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = base_blink_L
+        if(msg.blinkR < 0.3) // then blink right
+            object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = 0.5
+        else
+            object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = base_blink_R
+
+        
     }
 });
 };
@@ -63,7 +82,10 @@ loader.load('assets/ruby.gltf', function(gltf){
 
     scene.traverse(function (object) {
         if (object.isMesh) {
+            // set base transforms
             baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
+            base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
+            base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
         }
     });
 
