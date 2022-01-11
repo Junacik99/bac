@@ -9,6 +9,7 @@ mp_face_mesh = mp.solutions.face_mesh
 import time
 
 import json # for messages
+import math # for euclidean distance
 ##################################
 # WebSocket Client
 import asyncio
@@ -19,6 +20,11 @@ async def ws_send(message):
         await websocket.send(str(message))
         await websocket.recv()
 ######################################
+
+# Euclaidean distance
+def euclaideanDistance(pointA, pointB):
+  distance = math.sqrt((pointB.x - pointA.x)**2 + (pointB.y - pointA.y)**2)
+  return distance
 
 ## For webcam input:
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
@@ -31,6 +37,17 @@ lips_upper = 13 #0
 lips_bottom = 14 #17
 face_upper = 10
 face_bottom = 152
+face_right = 234
+face_left = 454
+iris_right = 474 # Facemesh nedetekuje oči, ale vo face_mesh_connections.py sú indexy pre zreničky(zrejme to treba nejako povoliť)
+eye_right_upper = 159
+eye_right_bottom = 145
+eye_right_left = 133
+eye_right_right = 33
+eye_left_upper = 386
+eye_left_bottom = 374
+eye_left_left = 263
+eye_left_right = 362
 
 with mp_face_mesh.FaceMesh(
     min_detection_confidence=0.5, 
@@ -62,7 +79,17 @@ with mp_face_mesh.FaceMesh(
         gap = abs(face_landmarks.landmark[lips_upper].y - face_landmarks.landmark[lips_bottom].y)
         # Calculate head rotation
         rot = face_landmarks.landmark[face_upper].x - face_landmarks.landmark[face_bottom].x
-        msg = json.dumps({'gap':gap, 'rot':rot})
+        nod = face_landmarks.landmark[face_upper].y - face_landmarks.landmark[face_bottom].y
+        turn = face_landmarks.landmark[face_right].z - face_landmarks.landmark[face_left].z
+        ed_R_v = euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
+        ed_R_h = euclaideanDistance(face_landmarks.landmark[eye_right_upper], face_landmarks.landmark[eye_right_bottom])
+        blinkR = ed_R_h/ed_R_v
+        ed_L_v = euclaideanDistance(face_landmarks.landmark[eye_left_right], face_landmarks.landmark[eye_left_left])
+        ed_L_h = euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
+        blinkL = ed_L_h/ed_L_v
+
+        # Message to send to websocket server
+        msg = json.dumps({'gap':gap, 'rot':rot, 'nod': nod, 'turn': turn, 'blinkR': blinkR, 'blinkL': blinkL}) # Velmi to taha dole FPS
         
         # Send data to ws server
         try:
