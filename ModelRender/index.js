@@ -9,6 +9,7 @@ let clips
 var isTalking = false
 let baseRot
 var gap = 0.0
+const gltf_name = 'assets/ruby1.gltf'
 const bone_jaw = "Bip001_Jaw_081" // Name of the jaw bone in gltf (mouth open)
 const bone_head = "Bip001_Head_011" // Name of the head bone (rotate head)
 const bone_eye_L = "Bip001_Eye_L_0123" // Irises
@@ -29,7 +30,7 @@ socket.onopen = function(e) {
 
 socket.onmessage = function(event) {
   //alert(`[message] Data received from server: ${event.data}`);
-  //console.log(`${event.data}`)
+//   console.log(`${event.data}`)
   let msg = JSON.parse(event.data)
   gap = msg.gap
   scene.traverse(function (object) {
@@ -40,11 +41,11 @@ socket.onmessage = function(event) {
         object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod +0.7
         object.skeleton.getBoneByName(bone_head).rotation.y = -msg.turn
 
-        if(msg.blinkL < 0.3) // then blink left
+        if(msg.blinkL < 0.27) // then blink left
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
         else
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = base_blink_L
-        if(msg.blinkR < 0.3) // then blink right
+        if(msg.blinkR < 0.27) // then blink right
             object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = 0.5
         else
             object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = base_blink_R
@@ -72,7 +73,7 @@ socket.onerror = function(error) {
 
 // GLTF Loader
 const loader = new GLTFLoader()
-loader.load('assets/ruby.gltf', function(gltf){
+loader.load(gltf_name, function(gltf){
     gltfChar = gltf
     gltf.scene.scale.set(0.1,0.1,0.1)
     scene.add(gltf.scene)
@@ -86,11 +87,12 @@ loader.load('assets/ruby.gltf', function(gltf){
             baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
             base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
             base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
+            console.log(`L: ${base_blink_L}, R: ${base_blink_R}`)
         }
     });
 
 }, function(xhr){
-    //console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
+    console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
 }, function(error){
     console.log(error)
 })
@@ -108,7 +110,7 @@ const sizes = {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height, 0.1, 100)
-camera.position.set(0,15,5)
+camera.position.set(-1,15,5)
 scene.add(camera)
 
 // Renderer
