@@ -33,13 +33,15 @@ socket.onmessage = function(event) {
 //   console.log(`${event.data}`)
   let msg = JSON.parse(event.data)
   gap = msg.gap
+
+  // Transform object
   scene.traverse(function (object) {
     if (object.isMesh) {
-        object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*4
+        object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*6
 
-        object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot -3.14159
-        object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod +0.7
-        object.skeleton.getBoneByName(bone_head).rotation.y = -msg.turn
+        object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot * 2 - 3.14159
+        object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod * 5 + 0.3
+        object.skeleton.getBoneByName(bone_head).rotation.y = msg.turn * 5
 
         if(msg.blinkL < 0.27) // then blink left
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7

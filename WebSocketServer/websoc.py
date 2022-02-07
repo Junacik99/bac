@@ -10,7 +10,7 @@ async def msg_handler(websocket):
         USERS.add(websocket)
         # Broadcast messasge
         async for message in websocket:
-            print(message)
+            # print(message)
             websockets.broadcast(USERS, message)
        
     finally:

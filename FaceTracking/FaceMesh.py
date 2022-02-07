@@ -3,6 +3,7 @@
 #Face Mesh Landmarks in 5 Minutes
 #Watch 5 Minute Tutorial at www.augmentedstartups.info/YouTube
 import cv2
+from matplotlib.pyplot import angle_spectrum
 import mediapipe as mp
 mp_drawing = mp.solutions.drawing_utils
 mp_face_mesh = mp.solutions.face_mesh
@@ -10,6 +11,7 @@ import time
 
 import json # for messages
 import math # for euclidean distance
+import numpy as np
 ##################################
 # WebSocket Client
 import asyncio
@@ -28,7 +30,7 @@ def euclaideanDistance(pointA, pointB):
 
 ## For webcam input:
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
-mode = 0 # 0 - webcam | 'filename' - video file
+mode = 1 # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
 
@@ -73,20 +75,49 @@ with mp_face_mesh.FaceMesh(
     # Draw the face mesh annotations on the image.
     image.flags.writeable = True
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    
+    nod = 0
+    img_h, img_w, img_c = image.shape
+    face_3d = []
+    face_2d = []
+
     if results.multi_face_landmarks:
       for face_landmarks in results.multi_face_landmarks:
+
+        for idx, lm in enumerate(face_landmarks.landmark):
+          if idx == 33 or idx == 263 or idx == 1 or idx == 61 or idx == 291 or idx == 199:
+            x, y = int(lm.x * img_w), int(lm.y * img_h)
+            face_2d.append([x, y])
+            face_3d.append([x, y, lm.z])
+
+        face_2d = np.array(face_2d, dtype=np.float64)
+        face_3d = np.array(face_3d, dtype=np.float64)
+
+        focal_length = 1 * img_w
+        cam_matrix = np.array([ [focal_length, 0, img_h / 2],
+                                    [0, focal_length, img_w / 2],
+                                    [0, 0, 1]])
+        dist_matrix = np.zeros((4, 1), dtype=np.float64)
+
+        success, rot_vec, trans_vec = cv2.solvePnP(face_3d, face_2d, cam_matrix, dist_matrix)
+        rmat, jac = cv2.Rodrigues(rot_vec)
+        angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
+        nod = angles[0]
+        turn = angles[1]
+        # rot = angles[2]
+
         # Calculate how big is gap between lips
         gap = abs(face_landmarks.landmark[lips_upper].y - face_landmarks.landmark[lips_bottom].y)
         # Calculate head rotation
         rot = face_landmarks.landmark[face_upper].x - face_landmarks.landmark[face_bottom].x
-        nod = face_landmarks.landmark[face_upper].y - face_landmarks.landmark[face_bottom].y
-        turn = face_landmarks.landmark[face_right].z - face_landmarks.landmark[face_left].z
-        ed_R_v = euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
-        ed_R_h = euclaideanDistance(face_landmarks.landmark[eye_right_upper], face_landmarks.landmark[eye_right_bottom])
-        blinkR = ed_R_h/ed_R_v
-        ed_L_v = euclaideanDistance(face_landmarks.landmark[eye_left_right], face_landmarks.landmark[eye_left_left])
-        ed_L_h = euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
-        blinkL = ed_L_h/ed_L_v
+        # nod = face_landmarks.landmark[face_upper].y - face_landmarks.landmark[face_bottom].y
+        # turn = face_landmarks.landmark[face_right].z - face_landmarks.landmark[face_left].z
+        ed_R_h = euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
+        ed_R_v = euclaideanDistance(face_landmarks.landmark[eye_right_upper], face_landmarks.landmark[eye_right_bottom])
+        blinkR = ed_R_v/ed_R_h
+        ed_L_h = euclaideanDistance(face_landmarks.landmark[eye_left_right], face_landmarks.landmark[eye_left_left])
+        ed_L_v = euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
+        blinkL = ed_L_v/ed_L_h
 
         # Message to send to websocket server
         msg = json.dumps({'gap':gap, 'rot':rot, 'nod': nod, 'turn': turn, 'blinkR': blinkR, 'blinkL': blinkL}) # Velmi to taha dole FPS
@@ -110,6 +141,7 @@ with mp_face_mesh.FaceMesh(
 
 
     cv2.putText(image, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
+    # cv2.putText(image, f'nod: {nod}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
     cv2.imshow('MediaPipe FaceMesh', image)
     if cv2.waitKey(5) & 0xFF == 27:
       break
