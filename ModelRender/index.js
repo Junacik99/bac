@@ -18,6 +18,8 @@ const bone_eyelid_L = "Bip001_EyelidUp_L_0125"
 const bone_eyelid_R = "Bip001_EyelidUp_R_0129"
 let base_blink_L
 let base_blink_R
+let base_eye_H_L
+let base_eye_H_R
 
 ///////////////////////////////////////////////////////
 // WebSocket
@@ -42,6 +44,9 @@ socket.onmessage = function(event) {
         object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot * 2 - 3.14159
         object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod * 5 + 0.3
         object.skeleton.getBoneByName(bone_head).rotation.y = msg.turn * 5
+
+        object.skeleton.getBoneByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
+        object.skeleton.getBoneByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
 
         if(msg.blinkL < 0.27) // then blink left
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
@@ -89,7 +94,10 @@ loader.load(gltf_name, function(gltf){
             baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
             base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
             base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
-            console.log(`L: ${base_blink_L}, R: ${base_blink_R}`)
+            let eye_L = object.skeleton.getBoneByName(bone_eye_L).rotation.z
+            let eye_R = object.skeleton.getBoneByName(bone_eye_R).rotation.z
+
+            console.log(`L: ${eye_L}, R: ${eye_R}`)
         }
     });
 

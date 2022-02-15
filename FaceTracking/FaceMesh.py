@@ -2,6 +2,7 @@
 #Modified by Augmented Startups 2021
 #Face Mesh Landmarks in 5 Minutes
 #Watch 5 Minute Tutorial at www.augmentedstartups.info/YouTube
+from turtle import left
 import cv2
 from matplotlib.pyplot import angle_spectrum
 import mediapipe as mp
@@ -32,7 +33,7 @@ def euclaideanDistance(pointA, pointB):
 
 ## For webcam input:
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
-mode = 1 # int - webcam(0 - default) | 'filename' - video file
+mode = 0 # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
 
@@ -43,8 +44,8 @@ face_upper = 10
 face_bottom = 152
 face_right = 234
 face_left = 454
-iris_right = 473 # Facemesh nedetekuje oči, ale vo face_mesh_connections.py sú indexy pre zreničky(zrejme to treba nejako povoliť)
-iris_left = 478
+iris_right = 468 # Facemesh nedetekuje oči, ale vo face_mesh_connections.py sú indexy pre zreničky(zrejme to treba nejako povoliť)
+iris_left = 473
 eye_right_upper = 159
 eye_right_bottom = 145
 eye_right_left = 133
@@ -127,8 +128,18 @@ with mp_face_mesh.FaceMesh(
         ed_L_v = euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
         blinkL = ed_L_v/ed_L_h
 
+        eye_L_h = euclaideanDistance(face_landmarks.landmark[iris_left], face_landmarks.landmark[eye_left_left]) / euclaideanDistance(face_landmarks.landmark[eye_left_right], face_landmarks.landmark[eye_left_left])
+        eye_R_h = euclaideanDistance(face_landmarks.landmark[iris_right], face_landmarks.landmark[eye_right_left]) / euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
+
         # Message to send to websocket server
-        msg = json.dumps({'gap':gap, 'rot':rot, 'nod': nod, 'turn': turn, 'blinkR': blinkR, 'blinkL': blinkL}) # Velmi to taha dole FPS
+        msg = json.dumps({'gap':gap, 
+        'rot':rot, 
+        'nod': nod, 
+        'turn': turn, 
+        'blinkR': blinkR, 
+        'blinkL': blinkL,
+        'eye_L_H': eye_L_h,
+        'eye_R_H': eye_R_h}) # Velmi to taha dole FPS
         
         # Send data to ws server
         try:
