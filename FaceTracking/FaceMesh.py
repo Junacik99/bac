@@ -7,6 +7,8 @@ from matplotlib.pyplot import angle_spectrum
 import mediapipe as mp
 mp_drawing = mp.solutions.drawing_utils
 mp_face_mesh = mp.solutions.face_mesh
+# mp_iris = mp.solutions.iris
+# iris = mp_iris.Iris()
 import time
 
 import json # for messages
@@ -41,7 +43,8 @@ face_upper = 10
 face_bottom = 152
 face_right = 234
 face_left = 454
-iris_right = 474 # Facemesh nedetekuje oči, ale vo face_mesh_connections.py sú indexy pre zreničky(zrejme to treba nejako povoliť)
+iris_right = 473 # Facemesh nedetekuje oči, ale vo face_mesh_connections.py sú indexy pre zreničky(zrejme to treba nejako povoliť)
+iris_left = 478
 eye_right_upper = 159
 eye_right_bottom = 145
 eye_right_left = 133
@@ -51,7 +54,12 @@ eye_left_bottom = 374
 eye_left_left = 263
 eye_left_right = 362
 
+RIGHT_IRIS = [469, 470, 471, 472]
+LEFT_IRIS = [474, 475, 476, 477]
+
 with mp_face_mesh.FaceMesh(
+    max_num_faces=1,
+    refine_landmarks=True, # for iris. False would return only 468 landmarks
     min_detection_confidence=0.5, 
     min_tracking_confidence=0.5) as face_mesh:
   while cap.isOpened():
@@ -128,12 +136,13 @@ with mp_face_mesh.FaceMesh(
         except ConnectionRefusedError:
           print('WS Server is down')
 
+        # Draw landmarks and connections
         mp_drawing.draw_landmarks(
             image=image,
             landmark_list=face_landmarks,
             connections=mp_face_mesh.FACEMESH_LIPS,
             landmark_drawing_spec=drawing_spec,
-            connection_drawing_spec=drawing_spec)
+            connection_drawing_spec=drawing_spec) 
 
     currTime = time.time()
     fps = 1 / (currTime - prevTime)
