@@ -47,6 +47,8 @@ socket.onmessage = function(event) {
 
         object.skeleton.getBoneByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
         object.skeleton.getBoneByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
+        object.skeleton.getBoneByName(bone_eye_L).rotation.x = msg.eye_L_V + 1
+        object.skeleton.getBoneByName(bone_eye_R).rotation.x = msg.eye_R_V + 1
 
         if(msg.blinkL < 0.27) // then blink left
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7

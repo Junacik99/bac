@@ -131,15 +131,21 @@ with mp_face_mesh.FaceMesh(
         eye_L_h = euclaideanDistance(face_landmarks.landmark[iris_left], face_landmarks.landmark[eye_left_left]) / euclaideanDistance(face_landmarks.landmark[eye_left_right], face_landmarks.landmark[eye_left_left])
         eye_R_h = euclaideanDistance(face_landmarks.landmark[iris_right], face_landmarks.landmark[eye_right_left]) / euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
 
+        eye_L_v = euclaideanDistance(face_landmarks.landmark[iris_left], face_landmarks.landmark[eye_left_bottom]) / euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
+        eye_R_v = euclaideanDistance(face_landmarks.landmark[iris_right], face_landmarks.landmark[eye_right_bottom]) / euclaideanDistance(face_landmarks.landmark[eye_right_upper], face_landmarks.landmark[eye_right_bottom])
+
         # Message to send to websocket server
-        msg = json.dumps({'gap':gap, 
+        msg = json.dumps({
+          'gap':gap, 
         'rot':rot, 
         'nod': nod, 
         'turn': turn, 
         'blinkR': blinkR, 
         'blinkL': blinkL,
         'eye_L_H': eye_L_h,
-        'eye_R_H': eye_R_h}) # Velmi to taha dole FPS
+        'eye_R_H': eye_R_h,
+        'eye_L_V': eye_L_v,
+        'eye_R_V': eye_R_v}) # Velmi to taha dole FPS
         
         # Send data to ws server
         try:
