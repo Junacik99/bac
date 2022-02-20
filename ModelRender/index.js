@@ -1,5 +1,6 @@
 import * as THREE from './three.js-master/build/three.module.js'
 import {GLTFLoader} from './three.js-master/examples/jsm/loaders/GLTFLoader.js'
+import { OrbitControls } from './three.js-master/examples/jsm/controls/OrbitControls.js'
 
 const canvas = document.querySelector('.webgl')
 const scene = new THREE.Scene()
@@ -9,7 +10,7 @@ let clips
 var isTalking = false
 let baseRot
 var gap = 0.0
-const gltf_name = 'assets/ruby1.gltf'
+const gltf_name = 'assets/Markus.gltf'
 const bone_jaw = "Bip001_Jaw_081" // Name of the jaw bone in gltf (mouth open)
 const bone_head = "Bip001_Head_011" // Name of the head bone (rotate head)
 const bone_eye_L = "Bip001_Eye_L_0123" // Irises
@@ -39,22 +40,27 @@ socket.onmessage = function(event) {
   // Transform object
   scene.traverse(function (object) {
     if (object.isMesh) {
+        // Jaw
         object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*6
 
+        // Head
         object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot * 2 - 3.14159
         object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod * 5 + 0.3
         object.skeleton.getBoneByName(bone_head).rotation.y = msg.turn * 5
 
+        // Irises
         object.skeleton.getBoneByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
         object.skeleton.getBoneByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
         object.skeleton.getBoneByName(bone_eye_L).rotation.x = msg.eye_L_V + 1
         object.skeleton.getBoneByName(bone_eye_R).rotation.x = msg.eye_R_V + 1
 
-        if(msg.blinkL < 0.27) // then blink left
+        // Blink
+        let blink_treshold = 0.27
+        if(msg.blinkL < blink_treshold) // then blink left
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
         else
             object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = base_blink_L
-        if(msg.blinkR < 0.27) // then blink right
+        if(msg.blinkR < blink_treshold) // then blink right
             object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = 0.5
         else
             object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = base_blink_R
@@ -93,13 +99,13 @@ loader.load(gltf_name, function(gltf){
     scene.traverse(function (object) {
         if (object.isMesh) {
             // set base transforms
-            baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
-            base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
-            base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
-            let eye_L = object.skeleton.getBoneByName(bone_eye_L).rotation.z
-            let eye_R = object.skeleton.getBoneByName(bone_eye_R).rotation.z
+            // baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
+            // base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
+            // base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
+            // let eye_L = object.skeleton.getBoneByName(bone_eye_L).rotation.z
+            // let eye_R = object.skeleton.getBoneByName(bone_eye_R).rotation.z
 
-            console.log(`L: ${eye_L}, R: ${eye_R}`)
+            // console.log(`L: ${eye_L}, R: ${eye_R}`)
         }
     });
 
@@ -132,6 +138,11 @@ const renderer = new THREE.WebGL1Renderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 renderer.shadowMap.enabled = true
+document.body.appendChild(renderer.domElement)
+
+// Camera Controls
+const controls = new OrbitControls(camera, renderer.domElement)
+controls.update()
 
 
 function animate(){
@@ -139,6 +150,7 @@ function animate(){
     var delta = clock.getDelta()
     if(mixer)
         mixer.update(delta)
+    controls.update()
     renderer.render(scene, camera)
 }
 
