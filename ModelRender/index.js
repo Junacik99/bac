@@ -10,17 +10,18 @@ let clips
 var isTalking = false
 let baseRot
 var gap = 0.0
-const gltf_name = 'assets/Markus.gltf'
-const bone_jaw = "Bip001_Jaw_081" // Name of the jaw bone in gltf (mouth open)
-const bone_head = "Bip001_Head_011" // Name of the head bone (rotate head)
-const bone_eye_L = "Bip001_Eye_L_0123" // Irises
-const bone_eye_R = "Bip001_Eye_R_0124"
-const bone_eyelid_L = "Bip001_EyelidUp_L_0125"
-const bone_eyelid_R = "Bip001_EyelidUp_R_0129"
+const gltf_path = 'assets/Markus.gltf'
+let scale_factor // TODO: prepisat na let
+let bone_jaw  // Name of the jaw bone in gltf (mouth open)
+let bone_head // Name of the head bone (rotate head)
+let bone_eye_L // Irises
+let bone_eye_R
+let bone_eyelid_L
+let bone_eyelid_R
 let base_blink_L
 let base_blink_R
-let base_eye_H_L
-let base_eye_H_R
+let jaw_mul, hrot_mul, hnod_mul, hturn_mul
+let hrot_off, hnod_off, hturn_off
 
 ///////////////////////////////////////////////////////
 // WebSocket
@@ -28,43 +29,52 @@ let socket = new WebSocket("ws://127.0.0.1:8765");
 
 socket.onopen = function(e) {
     console.log('Connection to ws server established')
-    // socket.send("My name is John");
+    // socket.send("message to reply to server");
 };
 
 socket.onmessage = function(event) {
-  //alert(`[message] Data received from server: ${event.data}`);
-//   console.log(`${event.data}`)
+    // console.log(`${event.data}`)
   let msg = JSON.parse(event.data)
   gap = msg.gap
 
-  // Transform object
+  // Transform object (Move)
   scene.traverse(function (object) {
     if (object.isMesh) {
         // Jaw
-        object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*6
+        if(bone_jaw != null){
+            object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*jaw_mul
+        }
 
         // Head
-        object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot * 2 - 3.14159
-        object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod * 5 + 0.3
-        object.skeleton.getBoneByName(bone_head).rotation.y = msg.turn * 5
+        if(bone_head != null){
+            object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot * hrot_mul + hrot_off
+            object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod * hnod_mul + hnod_off
+            object.skeleton.getBoneByName(bone_head).rotation.y = msg.turn * hturn_mul + hturn_off
+        }
 
         // Irises
-        object.skeleton.getBoneByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
-        object.skeleton.getBoneByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
-        object.skeleton.getBoneByName(bone_eye_L).rotation.x = msg.eye_L_V + 1
-        object.skeleton.getBoneByName(bone_eye_R).rotation.x = msg.eye_R_V + 1
+        // TODO: move eyes separately
+        if(bone_eye_L != null && bone_eye_R != null){
+            object.skeleton.getBoneByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
+            object.skeleton.getBoneByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
+            object.skeleton.getBoneByName(bone_eye_L).rotation.x = msg.eye_L_V + 1
+            object.skeleton.getBoneByName(bone_eye_R).rotation.x = msg.eye_R_V + 1
+        }
 
         // Blink
         let blink_treshold = 0.27
-        if(msg.blinkL < blink_treshold) // then blink left
-            object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
-        else
-            object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = base_blink_L
-        if(msg.blinkR < blink_treshold) // then blink right
-            object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = 0.5
-        else
-            object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = base_blink_R
-
+        if(bone_eyelid_L != null){
+            if(msg.blinkL < blink_treshold) // then blink left
+                object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
+            else
+                object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = base_blink_L
+        }
+        if(bone_eyelid_R != null){
+            if(msg.blinkR < blink_treshold) // then blink right
+                object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = 0.5
+            else
+                object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = base_blink_R
+        }
         
     }
 });
@@ -84,13 +94,52 @@ socket.onerror = function(error) {
   alert(`[error] ${error.message}`);
 };
 
+// Read config json
+let config
+function readTextFile(file, callback) {
+    var rawFile = new XMLHttpRequest()
+    rawFile.overrideMimeType("application/json")
+    rawFile.open("GET", file, true)
+    rawFile.onreadystatechange = function() {
+        if (rawFile.readyState === 4 && rawFile.status == "200")
+            callback(rawFile.responseText)
+    }
+    rawFile.send(null);
+}
+const conf_re = /.*assets\/(.+)\.gltf/g
+const model_name = conf_re.exec(gltf_path)[1]
+readTextFile(`configs/${model_name}.json`, function(text){
+    config = JSON.parse(text)
+    console.log(config)
 
+    // Set bones
+    bone_jaw = config.bones.bone_jaw
+    bone_head = config.bones.bone_head
+    bone_eye_L = config.bones.bone_eye_L
+    bone_eye_R = config.bones.bone_eye_R
+    bone_eyelid_L = config.bones.bone_eyelid_L
+    bone_eyelid_R = config.bones.bone_eyelid_R
+
+    // Multipliers
+    jaw_mul = config.bones.multipliers.jaw
+    hrot_mul = config.bones.multipliers.head_rot
+    hnod_mul = config.bones.multipliers.head_nod
+    hturn_mul = config.bones.multipliers.head_turn
+
+    // Offsets
+    hrot_off = config.bones.offsets.head_rot
+    hnod_off = config.bones.offsets.head_nod
+    hturn_off = config.bones.offsets.head_turn
+
+    // Scaling factor
+    scale_factor = config.scale_factor
+});
 
 // GLTF Loader
 const loader = new GLTFLoader()
-loader.load(gltf_name, function(gltf){
+loader.load(gltf_path, function(gltf){
     gltfChar = gltf
-    gltf.scene.scale.set(0.1,0.1,0.1)
+    gltf.scene.scale.set(scale_factor,scale_factor,scale_factor)
     scene.add(gltf.scene)
 
     mixer = new THREE.AnimationMixer(gltfChar.scene)
@@ -99,18 +148,19 @@ loader.load(gltf_name, function(gltf){
     scene.traverse(function (object) {
         if (object.isMesh) {
             // set base transforms
-            // baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
-            // base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
-            // base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
-            // let eye_L = object.skeleton.getBoneByName(bone_eye_L).rotation.z
-            // let eye_R = object.skeleton.getBoneByName(bone_eye_R).rotation.z
-
-            // console.log(`L: ${eye_L}, R: ${eye_R}`)
+            if(bone_jaw != null)
+                baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
+            if(bone_eyelid_L != null)
+                base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
+            if(bone_eyelid_R != null)
+                base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
+            
         }
     });
 
 }, function(xhr){
-    console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
+    // Print percent loaded
+    // console.log(`${xhr.loaded / xhr.total * 100}% loaded`)
 }, function(error){
     console.log(error)
 })

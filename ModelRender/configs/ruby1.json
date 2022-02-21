@@ -1,0 +1,24 @@
+{
+    "bones" : {
+        "bone_jaw": "Bip001_Jaw_081",
+        "bone_head": "Bip001_Head_011",
+        "bone_eye_L": "Bip001_Eye_L_0123",
+        "bone_eye_R": "Bip001_Eye_R_0124",
+        "bone_eyelid_L": "Bip001_EyelidUp_L_0125",
+        "bone_eyelid_R": "Bip001_EyelidUp_R_0129",
+        
+        "multipliers":{
+            "jaw":6,
+            "head_rot":2,
+            "head_nod":5,
+            "head_turn":5
+        },
+
+        "offsets":{
+            "head_rot": -3.14159,
+            "head_nod": 0.3,
+            "head_turn": 0
+        }
+    },
+    "scale_factor" : 0.1
+}
