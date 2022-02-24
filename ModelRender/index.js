@@ -9,17 +9,14 @@ var mixer, gltfChar
 let clips
 var isTalking = false
 let baseRot
+let base_blink_L, base_blink_R
 var gap = 0.0
-const gltf_path = 'assets/Markus.gltf'
-let scale_factor // TODO: prepisat na let
-let bone_jaw  // Name of the jaw bone in gltf (mouth open)
-let bone_head // Name of the head bone (rotate head)
-let bone_eye_L // Irises
-let bone_eye_R
-let bone_eyelid_L
-let bone_eyelid_R
-let base_blink_L
-let base_blink_R
+
+const gltf_path = 'assets/ruby1.gltf'
+const bgtexture_path = 'textures/bg.jpg'
+
+let scale_factor 
+let bone_jaw, bone_head, bone_eye_L, bone_eye_R, bone_eyelid_L, bone_eyelid_R
 let jaw_mul, hrot_mul, hnod_mul, hturn_mul
 let hrot_off, hnod_off, hturn_off
 
@@ -165,10 +162,18 @@ loader.load(gltf_path, function(gltf){
     console.log(error)
 })
 
+// Background
+const texture_loader = new THREE.TextureLoader();
+const bgTexture = texture_loader.load(bgtexture_path);
+scene.background = bgTexture
+
 // Light
-const light = new THREE.DirectionalLight('white', 1)
-light.position.set(2,2,5)
-scene.add(light)
+const light1 = new THREE.DirectionalLight('white', 1)
+light1.position.set(2,2,5)
+scene.add(light1)
+const light2 = new THREE.DirectionalLight('white', 1)
+light2.position.set(2,2,-5)
+scene.add(light2)
 
 // Window sizes
 const sizes = {
