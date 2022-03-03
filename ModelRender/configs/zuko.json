@@ -1,0 +1,18 @@
+{
+    "bones" : {
+        "bone_head": "mixamorigHead",
+        
+        "multipliers":{
+            "head_rot":2,
+            "head_nod":-5,
+            "head_turn":-5
+        },
+
+        "offsets":{
+            "head_rot": 0,
+            "head_nod": -0,
+            "head_turn": 0
+        }
+    },
+    "scale_factor" : 10
+}

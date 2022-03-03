@@ -12,7 +12,7 @@ let baseRot
 let base_blink_L, base_blink_R
 var gap = 0.0
 
-const gltf_path = 'assets/ruby1.gltf'
+const gltf_path = 'assets/oldman.gltf'
 const bgtexture_path = 'textures/bg.jpg'
 
 let scale_factor 
@@ -32,45 +32,45 @@ socket.onopen = function(e) {
 socket.onmessage = function(event) {
     // console.log(`${event.data}`)
   let msg = JSON.parse(event.data)
-  gap = msg.gap
 
   // Transform object (Move)
   scene.traverse(function (object) {
+
     if (object.isMesh) {
         // Jaw
         if(bone_jaw != null){
-            object.skeleton.getBoneByName(bone_jaw).rotation.x = baseRot + gap*jaw_mul
+            scene.getObjectByName(bone_jaw).rotation.x = baseRot + msg.gap*jaw_mul
         }
 
         // Head
         if(bone_head != null){
-            object.skeleton.getBoneByName(bone_head).rotation.z = msg.rot * hrot_mul + hrot_off
-            object.skeleton.getBoneByName(bone_head).rotation.x = msg.nod * hnod_mul + hnod_off
-            object.skeleton.getBoneByName(bone_head).rotation.y = msg.turn * hturn_mul + hturn_off
+            scene.getObjectByName(bone_head).rotation.z = msg.rot * hrot_mul + hrot_off
+            scene.getObjectByName(bone_head).rotation.x = msg.nod * hnod_mul + hnod_off
+            scene.getObjectByName(bone_head).rotation.y = msg.turn * hturn_mul + hturn_off
         }
 
         // Irises
         // TODO: move eyes separately
         if(bone_eye_L != null && bone_eye_R != null){
-            object.skeleton.getBoneByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
-            object.skeleton.getBoneByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
-            object.skeleton.getBoneByName(bone_eye_L).rotation.x = msg.eye_L_V + 1
-            object.skeleton.getBoneByName(bone_eye_R).rotation.x = msg.eye_R_V + 1
+            scene.getObjectByName(bone_eye_L).rotation.z = msg.eye_L_H + 1
+            scene.getObjectByName(bone_eye_R).rotation.z = msg.eye_R_H + 1
+            scene.getObjectByName(bone_eye_L).rotation.x = msg.eye_L_V + 1
+            scene.getObjectByName(bone_eye_R).rotation.x = msg.eye_R_V + 1
         }
 
         // Blink
         let blink_treshold = 0.27
         if(bone_eyelid_L != null){
             if(msg.blinkL < blink_treshold) // then blink left
-                object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = 3.7
+                scene.getObjectByName(bone_eyelid_L).rotation.x = 3.7
             else
-                object.skeleton.getBoneByName(bone_eyelid_L).rotation.x = base_blink_L
+                scene.getObjectByName(bone_eyelid_L).rotation.x = base_blink_L
         }
         if(bone_eyelid_R != null){
             if(msg.blinkR < blink_treshold) // then blink right
-                object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = 0.5
+                scene.getObjectByName(bone_eyelid_R).rotation.x = 0.5
             else
-                object.skeleton.getBoneByName(bone_eyelid_R).rotation.x = base_blink_R
+                scene.getObjectByName(bone_eyelid_R).rotation.x = base_blink_R
         }
         
     }
@@ -146,11 +146,11 @@ loader.load(gltf_path, function(gltf){
         if (object.isMesh) {
             // set base transforms
             if(bone_jaw != null)
-                baseRot = object.skeleton.getBoneByName(bone_jaw).rotation.x
+                baseRot = scene.getObjectByName(bone_jaw).rotation.x
             if(bone_eyelid_L != null)
-                base_blink_L = object.skeleton.getBoneByName(bone_eyelid_L).rotation.x
+                base_blink_L = scene.getObjectByName(bone_eyelid_L).rotation.x
             if(bone_eyelid_R != null)
-                base_blink_R = object.skeleton.getBoneByName(bone_eyelid_R).rotation.x
+                base_blink_R = scene.getObjectByName(bone_eyelid_R).rotation.x
             
         }
     });
