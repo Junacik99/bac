@@ -12,7 +12,7 @@ let baseRot
 let base_blink_L, base_blink_R
 var gap = 0.0
 
-const gltf_path = 'assets/oldman.gltf'
+var gltf_path = 'assets/oldman.gltf'
 const bgtexture_path = 'textures/bg.jpg'
 
 let scale_factor 
@@ -34,6 +34,7 @@ socket.onmessage = function(event) {
   let msg = JSON.parse(event.data)
 
   // Transform object (Move)
+  // TODO: scene.traverse a object.isMesh su zrejme nepodstatne
   scene.traverse(function (object) {
 
     if (object.isMesh) {
@@ -93,6 +94,7 @@ socket.onerror = function(error) {
 
 // Read config json
 let config
+function load_config(){
 function readTextFile(file, callback) {
     var rawFile = new XMLHttpRequest()
     rawFile.overrideMimeType("application/json")
@@ -131,9 +133,12 @@ readTextFile(`configs/${model_name}.json`, function(text){
     // Scaling factor
     scale_factor = config.scale_factor
 });
+}
+load_config()
 
 // GLTF Loader
 const loader = new GLTFLoader()
+function load_gltf(){
 loader.load(gltf_path, function(gltf){
     gltfChar = gltf
     gltf.scene.scale.set(scale_factor,scale_factor,scale_factor)
@@ -161,6 +166,22 @@ loader.load(gltf_path, function(gltf){
 }, function(error){
     console.log(error)
 })
+}
+load_gltf()
+
+
+// Select char
+const btn = document.querySelector('#btn')
+const sb = document.querySelector('#chars')
+btn.onclick = (event) => {
+    event.preventDefault()
+    console.log(sb.value)
+    gltf_path = sb.value
+    
+    scene.remove(gltfChar.scene)
+    load_gltf()
+    load_config()
+};
 
 // Background
 const texture_loader = new THREE.TextureLoader();

@@ -8,7 +8,7 @@
         "bone_eyelid_R": "Bip001_EyelidUp_R_0129",
         
         "multipliers":{
-            "jaw":6,
+            "jaw":4,
             "head_rot":2,
             "head_nod":5,
             "head_turn":5
