@@ -6,11 +6,11 @@ const canvas = document.querySelector('.webgl')
 const scene = new THREE.Scene()
 var clock = new THREE.Clock()
 var mixer, gltfChar
-let clips
-var isTalking = false
-let baseRot
+// let clips
+// var isTalking = false
+let base_jaw_rot
 let base_blink_L, base_blink_R
-var gap = 0.0
+// var gap = 0.0
 
 var gltf_path = 'assets/oldman.gltf'
 const bgtexture_path = 'textures/bg2.png'
@@ -40,7 +40,7 @@ socket.onmessage = function(event) {
     if (object.isMesh) {
         // Jaw
         if(bone_jaw != null){
-            scene.getObjectByName(bone_jaw).rotation.x = baseRot + msg.gap*jaw_mul
+            scene.getObjectByName(bone_jaw).rotation.x = base_jaw_rot + msg.gap*jaw_mul
         }
 
         // Head
@@ -144,14 +144,14 @@ loader.load(gltf_path, function(gltf){
     gltf.scene.scale.set(scale_factor,scale_factor,scale_factor)
     scene.add(gltf.scene)
 
-    mixer = new THREE.AnimationMixer(gltfChar.scene)
-    clips = gltfChar.animations
+    // mixer = new THREE.AnimationMixer(gltfChar.scene)
+    // clips = gltfChar.animations
 
     scene.traverse(function (object) {
         if (object.isMesh) {
             // set base transforms
             if(bone_jaw != null)
-                baseRot = scene.getObjectByName(bone_jaw).rotation.x
+                base_jaw_rot = scene.getObjectByName(bone_jaw).rotation.x
             if(bone_eyelid_L != null)
                 base_blink_L = scene.getObjectByName(bone_eyelid_L).rotation.x
             if(bone_eyelid_R != null)
@@ -235,59 +235,59 @@ animate()
 
 
 // onKeyDown
-document.addEventListener("keydown", onDocumentKeyDown, false)
-function onDocumentKeyDown(event) {
-    var keyCode = event.which
-    const spaceKey = 32
-    const rightArrowKey = 39
-    const leftArrowKey = 37
-    const upKey = 38
-    const downKey = 40
+// document.addEventListener("keydown", onDocumentKeyDown, false)
+// function onDocumentKeyDown(event) {
+//     var keyCode = event.which
+//     const spaceKey = 32
+//     const rightArrowKey = 39
+//     const leftArrowKey = 37
+//     const upKey = 38
+//     const downKey = 40
 
-    if(keyCode == spaceKey){
-        // Play Animation
+//     if(keyCode == spaceKey){
+//         // Play Animation
         
-        const clip_open = THREE.AnimationClip.findByName( clips, 'openMouth' )
-        const action_open = mixer.clipAction( clip_open )
-        const clip_closed = THREE.AnimationClip.findByName( clips, 'closedMouth' )
-        const action_closed = mixer.clipAction( clip_closed )
-        if(!isTalking){
-            action_open.stop()
-            action_closed.crossFadeTo(action_open, 0.5, false).play()
-        }
-        else{
-            action_closed.stop()
-            action_open.crossFadeTo(action_closed, 0.5, false).play()
-        }
-        scene.traverse(function (object) {
-            if (object.isMesh) {
-                console.log(object.skeleton.getBoneByName(bone_jaw).rotation.x)
-            }
-        });
-        isTalking = !isTalking
-    }
+//         const clip_open = THREE.AnimationClip.findByName( clips, 'openMouth' )
+//         const action_open = mixer.clipAction( clip_open )
+//         const clip_closed = THREE.AnimationClip.findByName( clips, 'closedMouth' )
+//         const action_closed = mixer.clipAction( clip_closed )
+//         if(!isTalking){
+//             action_open.stop()
+//             action_closed.crossFadeTo(action_open, 0.5, false).play()
+//         }
+//         else{
+//             action_closed.stop()
+//             action_open.crossFadeTo(action_closed, 0.5, false).play()
+//         }
+//         scene.traverse(function (object) {
+//             if (object.isMesh) {
+//                 console.log(object.skeleton.getBoneByName(bone_jaw).rotation.x)
+//             }
+//         });
+//         isTalking = !isTalking
+//     }
 
-    // Rotate Head
-    if(keyCode == rightArrowKey){
-        scene.traverse(function (object) {
-            if (object.isMesh) {
-                object.skeleton.getBoneByName(bone_head).rotation.z += 0.01
-            }
-        });
-    }
-    if(keyCode == leftArrowKey){
-        scene.traverse(function (object) {
-            if (object.isMesh) {
-                //object.skeleton.bones[1].rotation.y -= 0.1
-                object.skeleton.getBoneByName(bone_head).rotation.z -= 0.01
-            }
-        });
-    }
+//     // Rotate Head
+//     if(keyCode == rightArrowKey){
+//         scene.traverse(function (object) {
+//             if (object.isMesh) {
+//                 object.skeleton.getBoneByName(bone_head).rotation.z += 0.01
+//             }
+//         });
+//     }
+//     if(keyCode == leftArrowKey){
+//         scene.traverse(function (object) {
+//             if (object.isMesh) {
+//                 //object.skeleton.bones[1].rotation.y -= 0.1
+//                 object.skeleton.getBoneByName(bone_head).rotation.z -= 0.01
+//             }
+//         });
+//     }
 
-    // Camera Up/Down
-    if(keyCode == upKey)
-        camera.position.y += 0.5
-    if(keyCode == downKey)
-        camera.position.y -= 0.5
-}
+//     // Camera Up/Down
+//     if(keyCode == upKey)
+//         camera.position.y += 0.5
+//     if(keyCode == downKey)
+//         camera.position.y -= 0.5
+// }
 
