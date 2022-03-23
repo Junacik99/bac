@@ -13,7 +13,7 @@ let base_blink_L, base_blink_R
 var gap = 0.0
 
 var gltf_path = 'assets/oldman.gltf'
-const bgtexture_path = 'textures/bg.jpg'
+const bgtexture_path = 'textures/bg2.png'
 
 let scale_factor 
 let bone_jaw, bone_head, bone_eye_L, bone_eye_R, bone_eyelid_L, bone_eyelid_R

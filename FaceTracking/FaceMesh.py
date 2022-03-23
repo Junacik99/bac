@@ -33,7 +33,7 @@ def euclaideanDistance(pointA, pointB):
 
 ## For webcam input:
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
-mode = 1 # int - webcam(0 - default) | 'filename' - video file
+mode = 0 # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
 
@@ -117,10 +117,13 @@ with mp_face_mesh.FaceMesh(
 
         # Calculate how big is gap between lips
         gap = abs(face_landmarks.landmark[lips_upper].y - face_landmarks.landmark[lips_bottom].y)
+        
         # Calculate head rotation
         rot = face_landmarks.landmark[face_upper].x - face_landmarks.landmark[face_bottom].x
         # nod = face_landmarks.landmark[face_upper].y - face_landmarks.landmark[face_bottom].y
         # turn = face_landmarks.landmark[face_right].z - face_landmarks.landmark[face_left].z
+
+        # Calculate Blinking
         ed_R_h = euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
         ed_R_v = euclaideanDistance(face_landmarks.landmark[eye_right_upper], face_landmarks.landmark[eye_right_bottom])
         blinkR = ed_R_v/ed_R_h
@@ -128,9 +131,11 @@ with mp_face_mesh.FaceMesh(
         ed_L_v = euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
         blinkL = ed_L_v/ed_L_h
 
+        # Horizontal look
         eye_L_h = euclaideanDistance(face_landmarks.landmark[iris_left], face_landmarks.landmark[eye_left_left]) / euclaideanDistance(face_landmarks.landmark[eye_left_right], face_landmarks.landmark[eye_left_left])
         eye_R_h = euclaideanDistance(face_landmarks.landmark[iris_right], face_landmarks.landmark[eye_right_left]) / euclaideanDistance(face_landmarks.landmark[eye_right_right], face_landmarks.landmark[eye_right_left])
 
+        # Vertical look
         eye_L_v = euclaideanDistance(face_landmarks.landmark[iris_left], face_landmarks.landmark[eye_left_bottom]) / euclaideanDistance(face_landmarks.landmark[eye_left_upper], face_landmarks.landmark[eye_left_bottom])
         eye_R_v = euclaideanDistance(face_landmarks.landmark[iris_right], face_landmarks.landmark[eye_right_bottom]) / euclaideanDistance(face_landmarks.landmark[eye_right_upper], face_landmarks.landmark[eye_right_bottom])
 
