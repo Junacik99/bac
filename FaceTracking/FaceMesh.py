@@ -68,7 +68,7 @@ with mp_face_mesh.FaceMesh(
     if not success:
       print("Ignoring empty camera frame.")
       # If loading a video, use 'break' instead of 'continue'.
-      if mode == 0:
+      if mode == 0 or mode == 1:
         continue
       else:
         break

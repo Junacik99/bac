@@ -1,0 +1,22 @@
+{
+    "bones" : {
+        "bone_jaw": "Quijada",
+        "bone_head": "Cabeza",
+        "bone_eye_L": "Ojo_Control",
+        "bone_eye_R": "Ojo_Control_2",
+        
+        "multipliers": {
+            "jaw":-4,
+            "head_rot":1,
+            "head_nod":1,
+            "head_turn":1
+        },
+
+        "offsets": {
+            "head_rot": 0,
+            "head_nod": 0,
+            "head_turn": 0
+        }
+    },
+    "scale_factor" : 3
+}

@@ -1,0 +1,22 @@
+{
+    "bones" : {
+        "bone_jaw": "Jaw",
+        "bone_head": "Head",
+        "bone_eye_L": "Eye.L",
+        "bone_eye_R": "Eye.R",
+        
+        "multipliers": {
+            "jaw": -4,
+            "head_rot": 5,
+            "head_nod": 5,
+            "head_turn": 5
+        },
+
+        "offsets": {
+            "head_rot": 0,
+            "head_nod": 0,
+            "head_turn": 0
+        }
+    },
+    "scale_factor" : 7
+}
