@@ -33,7 +33,7 @@ def euclaideanDistance(pointA, pointB):
 
 ## For webcam input:
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
-mode = 0 # int - webcam(0 - default) | 'filename' - video file
+mode = 1 # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
 
