@@ -3,14 +3,14 @@
         "bone_jaw": "jaw",
         "bone_head": "head",
 
-        "multipliers":{
+        "multipliers": {
             "jaw":-6,
             "head_rot":2,
             "head_nod":5,
             "head_turn":5
         },
 
-        "offsets":{
+        "offsets": {
             "head_rot": 0,
             "head_nod": 0.3,
             "head_turn": 0
