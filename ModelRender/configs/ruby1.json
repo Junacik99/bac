@@ -11,13 +11,26 @@
             "jaw":4,
             "head_rot":2,
             "head_nod":5,
-            "head_turn":5
+            "head_turn":5,
+            "eye_L_V": 1,
+            "eye_L_H": 1,
+            "eye_R_V": 1,
+            "eye_R_H": 1
         },
 
         "offsets":{
             "head_rot": -3.14159,
             "head_nod": 0.3,
-            "head_turn": 0
+            "head_turn": 0,
+            "eye_L_V": 1,
+            "eye_L_H": 1,
+            "eye_R_V": 1,
+            "eye_R_H": 1
+        },
+
+        "axis": {
+            "eye_H": "z",
+            "eye_V": "x"
         }
     },
     "scale_factor" : 0.1

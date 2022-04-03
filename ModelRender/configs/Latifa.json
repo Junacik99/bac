@@ -4,16 +4,29 @@
         "bone_eye_L": "Eye_L",
         "bone_eye_R": "Eye_R",
         
-        "multipliers":{
-            "head_rot":2,
-            "head_nod":-5,
-            "head_turn":-5
+        "multipliers": {
+            "head_rot": 2,
+            "head_nod": -5,
+            "head_turn": -5,
+            "eye_L_V": -1,
+            "eye_L_H": -1,
+            "eye_R_V": -1,
+            "eye_R_H": -1
         },
 
-        "offsets":{
+        "offsets": {
             "head_rot": 0,
             "head_nod": -0,
-            "head_turn": 0
+            "head_turn": 0,
+            "eye_L_V": 0.85,
+            "eye_L_H": 0.2,
+            "eye_R_V": 0.85,
+            "eye_R_H": 0.8
+        },
+
+        "axis": {
+            "eye_H": "y",
+            "eye_V": "x"
         }
     },
     "scale_factor" : 10
