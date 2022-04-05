@@ -12,7 +12,7 @@ let base_jaw_rot
 let base_blink_L, base_blink_R
 // var gap = 0.0
 
-var gltf_path = 'assets/Latifa.gltf'
+var gltf_path = 'assets/ruby1.gltf'
 const bgtexture_path = 'textures/bg2.png'
 
 let scale_factor 
