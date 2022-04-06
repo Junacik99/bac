@@ -20,5 +20,12 @@
             "head_turn": 0
         }
     },
-    "scale_factor" : 10
+    "scale_factor" : 10,
+
+    "camera_position": {
+        "x": 0,
+        "y": 0,
+        "z": 15
+    },
+    "camera_offsetY": 0
 }

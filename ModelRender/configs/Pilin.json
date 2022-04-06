@@ -18,5 +18,12 @@
             "head_turn": 0
         }
     },
-    "scale_factor" : 3
+    "scale_factor" : 3,
+
+    "camera_position": {
+        "x": 0,
+        "y": 6,
+        "z": 14
+    },
+    "camera_offsetY": 0
 }

@@ -12,7 +12,7 @@ let base_jaw_rot
 let base_blink_L, base_blink_R
 // var gap = 0.0
 
-var gltf_path = 'assets/Latifa.gltf'
+var gltf_path = 'assets/ruby1.gltf'
 const bgtexture_path = 'textures/bg2.png'
 
 let scale_factor 
@@ -20,6 +20,13 @@ let bone_jaw, bone_head, bone_eye_L, bone_eye_R, bone_eyelid_L, bone_eyelid_R
 let jaw_mul, hrot_mul, hnod_mul, hturn_mul, eye_L_H_mul, eye_L_V_mul, eye_R_H_mul, eye_R_V_mul
 let hrot_off, hnod_off, hturn_off, eye_L_H_off, eye_L_V_off, eye_R_H_off, eye_R_V_off
 let axis_eye_H, axis_eye_V
+var camera_position = { // TODO: maybe let?
+    x: 0,
+    y: 0,
+    z: 0
+}
+let camera_offsetY
+  
 
 ///////////////////////////////////////////////////////
 // WebSocket
@@ -147,11 +154,19 @@ readTextFile(`configs/${model_name}.json`, function(text){
     eye_R_V_off = config.bones.offsets.eye_R_V
 
     // Axis
-    axis_eye_H = config.bones.axis.eye_H
-    axis_eye_V = config.bones.axis.eye_V
+    if (config.bones.axis != null) {
+        axis_eye_H = config.bones.axis.eye_H
+        axis_eye_V = config.bones.axis.eye_V
+    }
 
     // Scaling factor
     scale_factor = config.scale_factor
+
+    // Camera position
+    camera.position.set(config.camera_position.x,
+        config.camera_position.y,
+        config.camera_position.z)
+    camera_offsetY = config.camera_offsetY
 });
 }
 load_config()
@@ -167,9 +182,6 @@ loader.load(gltf_path, function(gltf){
     // mixer = new THREE.AnimationMixer(gltfChar.scene)
     // clips = gltfChar.animations
 
-    console.log(scene.getObjectByName(bone_eye_L).rotation)
-    console.log(scene.getObjectByName(bone_eye_R).rotation)
-
     scene.traverse(function (object) {
         if (object.isMesh) {
             // set base transforms
@@ -182,6 +194,10 @@ loader.load(gltf_path, function(gltf){
             
         }
     });
+
+    // Set camera to look at avatar's head
+    var target = scene.getObjectByName(bone_head).position
+    controls.target = new THREE.Vector3(target.x, target.y + camera_offsetY, target.z)
 
 }, function(xhr){
     // Print percent loaded
@@ -227,8 +243,9 @@ const sizes = {
 
 // Camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width/sizes.height, 0.1, 100)
-camera.position.set(-1,15,5)
+camera.position.set(camera_position.x, camera_position.y, camera_position.z)
 scene.add(camera)
+
 
 // Renderer
 const renderer = new THREE.WebGL1Renderer({
@@ -266,7 +283,8 @@ function onDocumentKeyDown(event) {
     const leftArrowKey = 37
     const upKey = 38
     const downKey = 40
-    const w=87, a=65, s=83, d=68
+    const w=87, a=65, s=83, d=68,
+    c = 67
 
     if (keyCode == a)
         scene.getObjectByName(bone_eye_R).rotation.y -= 0.2
@@ -276,6 +294,10 @@ function onDocumentKeyDown(event) {
         scene.getObjectByName(bone_eye_R).rotation.x += 0.2
     if (keyCode == s)
         scene.getObjectByName(bone_eye_R).rotation.x -= 0.2
+
+    if (keyCode == c) {
+        console.log(camera.position)
+    }
 
     if (keyCode == spaceKey){
         // Play Animation
@@ -316,6 +338,8 @@ function onDocumentKeyDown(event) {
             }
         });
     }
+
+
 
     // Camera Up/Down
     if (keyCode == upKey)

@@ -11,7 +11,7 @@
             "jaw":4,
             "head_rot":2,
             "head_nod":5,
-            "head_turn":5,
+            "head_turn":10,
             "eye_L_V": 1,
             "eye_L_H": 1,
             "eye_R_V": 1,
@@ -33,5 +33,12 @@
             "eye_V": "x"
         }
     },
-    "scale_factor" : 0.1
+    "scale_factor" : 0.1,
+
+    "camera_position": {
+        "x": -1,
+        "y": 15,
+        "z": 10
+    },
+    "camera_offsetY": 5
 }
