@@ -1,6 +1,8 @@
 import { GUI } from './node_modules/dat.gui/build/dat.gui.module.js'
+import { select_avatar } from './index.js'
 
 const gui = new GUI()
+gui.width = 300
 
 const arr = ["one", "two", "three"]
 const dir = {
@@ -20,5 +22,4 @@ let options = {
     background: "default_background.png"
 }
 
-gui.add(options, 'avatar', dir).name('Select Avatar').onChange((value) => load_gltf()) // TODO: zavolat load_gltf() 
-// https://www.delftstack.com/howto/javascript/javascript-call-function-from-another-js-file/
+gui.add(options, 'avatar', dir).name('Select Avatar').onChange((value) => select_avatar(value)) 

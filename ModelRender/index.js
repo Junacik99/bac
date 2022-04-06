@@ -209,18 +209,13 @@ loader.load(gltf_path, function(gltf){
 load_gltf()
 
 
-// Select char
-const btn = document.querySelector('#btn')
-const sb = document.querySelector('#chars')
-btn.onclick = (event) => {
-    event.preventDefault()
-    console.log(sb.value)
-    gltf_path = sb.value
-    
+// Select Avatar
+function select_avatar(avatar_path){
+    gltf_path = avatar_path
     scene.remove(gltfChar.scene)
     load_gltf()
     load_config()
-};
+}
 
 // Background
 const texture_loader = new THREE.TextureLoader();
@@ -348,3 +343,4 @@ function onDocumentKeyDown(event) {
         camera.position.y -= 0.5
 }
 
+export { select_avatar }
