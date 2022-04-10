@@ -11,7 +11,7 @@
             "jaw":4,
             "head_rot":2,
             "head_nod":5,
-            "head_turn":10,
+            "head_turn":-15,
             "eye_L_V": 1,
             "eye_L_H": 1,
             "eye_R_V": 1,
@@ -21,7 +21,7 @@
         "offsets": {
             "head_rot": -3.14159,
             "head_nod": 0.3,
-            "head_turn": 0,
+            "head_turn": 0.4,
             "eye_L_V": 1,
             "eye_L_H": 1,
             "eye_R_V": 1,

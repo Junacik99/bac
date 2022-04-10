@@ -56,6 +56,8 @@ socket.onmessage = function(event) {
             scene.getObjectByName(bone_head).rotation.z = msg.rot * hrot_mul + hrot_off
             scene.getObjectByName(bone_head).rotation.x = msg.nod * hnod_mul + hnod_off
             scene.getObjectByName(bone_head).rotation.y = msg.turn * hturn_mul + hturn_off
+            // scene.getObjectByName(bone_head).rotation.y = 1
+            console.log(scene.getObjectByName(bone_head).rotation.y)
         }
 
         // Irises
@@ -218,17 +220,27 @@ function select_avatar(avatar_path){
 }
 
 // Background
-const texture_loader = new THREE.TextureLoader();
-const bgTexture = texture_loader.load(bgtexture_path);
+const texture_loader = new THREE.TextureLoader()
+var bgTexture = texture_loader.load(bgtexture_path)
 scene.background = bgTexture
+function select_bg(bg_path){
+    bgTexture = texture_loader.load(bg_path)
+    scene.background = bgTexture
+}
 
 // Light
-const light1 = new THREE.DirectionalLight('white', 1)
-light1.position.set(2,2,5)
-scene.add(light1)
-const light2 = new THREE.DirectionalLight('white', 1)
-light2.position.set(2,2,-5)
-scene.add(light2)
+var light_front = new THREE.DirectionalLight('white', 1)
+light_front.position.set(2,2,5)
+scene.add(light_front)
+var light_back = new THREE.DirectionalLight('white', 1)
+light_back.position.set(2,2,-5)
+scene.add(light_back)
+function set_front_light(intensity){
+    light_front.intensity = intensity
+}
+function set_back_light(intensity){
+    light_back.intensity = intensity
+}
 
 // Window sizes
 const sizes = {
@@ -343,4 +355,4 @@ function onDocumentKeyDown(event) {
         camera.position.y -= 0.5
 }
 
-export { select_avatar }
+export { select_avatar, select_bg, set_front_light, set_back_light }

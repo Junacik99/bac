@@ -13,7 +13,7 @@ mp_face_mesh = mp.solutions.face_mesh
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
 ## For webcam input:
-mode = 0 # int - webcam(0 - default) | 'filename' - video file
+mode = 1 # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
 
@@ -106,6 +106,16 @@ with mp_face_mesh.FaceMesh(
     fps = 1 / (currTime - prevTime)
     prevTime = currTime
 
+    text = ""
+    if turn*360 < -10:
+      text = "Looking Right"
+    elif turn*360 > 10:
+      text = "Looking Left"
+    else:
+      text = "Forward"
+
+    cv2.putText(image, text, (20, 110), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
+    cv2.putText(image, f'Turn: {turn}', (300, 70), cv2.FONT_HERSHEY_PLAIN, 1, (0, 196, 255), 2)
 
     cv2.putText(image, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
     cv2.imshow('MediaPipe FaceMesh', image)

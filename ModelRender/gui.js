@@ -1,11 +1,10 @@
 import { GUI } from './node_modules/dat.gui/build/dat.gui.module.js'
-import { select_avatar } from './index.js'
+import { select_avatar, select_bg, set_front_light, set_back_light } from './index.js'
 
 const gui = new GUI()
 gui.width = 300
 
-const arr = ["one", "two", "three"]
-const dir = {
+const avatars = {
     Ruby: "assets/ruby1.gltf",
     Oldman: "assets/oldman.gltf",
     Markus: "assets/Markus.gltf",
@@ -16,10 +15,20 @@ const dir = {
     Bandit_without_mask: "assets/bandit_withoutmask.gltf"
 }
 
-
-let options = {
-    avatar: dir.Ruby,
-    background: "default_background.png"
+const backgrounds = {
+    Day: "textures/bg2.png",
+    Field: "textures/bg.JPG",
+    Night: "textures/night_sky.png"
 }
 
-gui.add(options, 'avatar', dir).name('Select Avatar').onChange((value) => select_avatar(value)) 
+let options = {
+    avatar: avatars.Ruby,
+    background: backgrounds.Day,
+    light_front: 1,
+    light_back: 1
+}
+
+gui.add(options, 'avatar', avatars).name('Select Avatar').onChange((value) => select_avatar(value)) 
+gui.add(options, 'background', backgrounds).name('Select Background').onChange((value) => select_bg(value)) 
+gui.add(options, 'light_front', 0, 1).name('Front light intensity').onChange((value) => set_front_light(value))
+gui.add(options, 'light_back', 0, 1).name('Back light intensity').onChange((value) => set_back_light(value))
