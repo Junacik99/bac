@@ -2,20 +2,33 @@
     "bones" : {
         "bone_jaw": "Jaw",
         "bone_head": "Head",
-        "bone_eye_L": "Eye.L",
-        "bone_eye_R": "Eye.R",
+        "bone_eye_L": "EyeL",
+        "bone_eye_R": "EyeR",
         
         "multipliers": {
             "jaw": -4,
             "head_rot": 5,
             "head_nod": 5,
-            "head_turn": 5
+            "head_turn": 5,
+            "eye_L_V": 1,
+            "eye_L_H": 1,
+            "eye_R_V": 1,
+            "eye_R_H": 1
         },
 
         "offsets": {
             "head_rot": 0,
             "head_nod": 0,
-            "head_turn": 0
+            "head_turn": 0,
+            "eye_L_V": -2,
+            "eye_L_H": -0.5,
+            "eye_R_V": -2,
+            "eye_R_H": -0.5
+        },
+
+        "axis": {
+            "eye_H": "z",
+            "eye_V": "x"
         }
     },
     "scale_factor" : 7,

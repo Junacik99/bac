@@ -56,8 +56,6 @@ socket.onmessage = function(event) {
             scene.getObjectByName(bone_head).rotation.z = msg.rot * hrot_mul + hrot_off
             scene.getObjectByName(bone_head).rotation.x = msg.nod * hnod_mul + hnod_off
             scene.getObjectByName(bone_head).rotation.y = msg.turn * hturn_mul + hturn_off
-            // scene.getObjectByName(bone_head).rotation.y = 1
-            console.log(scene.getObjectByName(bone_head).rotation.y)
         }
 
         // Irises
@@ -193,9 +191,11 @@ loader.load(gltf_path, function(gltf){
                 base_blink_L = scene.getObjectByName(bone_eyelid_L).rotation.x
             if (bone_eyelid_R != null)
                 base_blink_R = scene.getObjectByName(bone_eyelid_R).rotation.x
-            
         }
     });
+
+    console.log(scene.getObjectByName(bone_eye_L).rotation)
+    console.log(scene.getObjectByName(bone_eye_R).rotation)
 
     // Set camera to look at avatar's head
     var target = scene.getObjectByName(bone_head).position
@@ -294,9 +294,9 @@ function onDocumentKeyDown(event) {
     c = 67
 
     if (keyCode == a)
-        scene.getObjectByName(bone_eye_R).rotation.y -= 0.2
+        scene.getObjectByName(bone_eye_R).rotation.z -= 0.2
     if (keyCode == d)
-        scene.getObjectByName(bone_eye_R).rotation.y += 0.2
+        scene.getObjectByName(bone_eye_R).rotation.z += 0.2
     if (keyCode == w)
         scene.getObjectByName(bone_eye_R).rotation.x += 0.2
     if (keyCode == s)

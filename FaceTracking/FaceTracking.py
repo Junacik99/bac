@@ -35,7 +35,8 @@ with mp_face_mesh.FaceMesh(
 
     # Flip the image horizontally for a later selfie-view display, and convert
     # the BGR image to RGB.
-    image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+    # image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     # To improve performance, optionally mark the image as not writeable to
     # pass by reference.
     image.flags.writeable = False
@@ -106,16 +107,16 @@ with mp_face_mesh.FaceMesh(
     fps = 1 / (currTime - prevTime)
     prevTime = currTime
 
-    text = ""
-    if turn*360 < -10:
-      text = "Looking Right"
-    elif turn*360 > 10:
-      text = "Looking Left"
-    else:
-      text = "Forward"
+    # text = ""
+    # if turn*360 < -10:
+    #   text = "Looking Right"
+    # elif turn*360 > 10:
+    #   text = "Looking Left"
+    # else:
+    #   text = "Forward"
 
-    cv2.putText(image, text, (20, 110), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
-    cv2.putText(image, f'Turn: {turn}', (300, 70), cv2.FONT_HERSHEY_PLAIN, 1, (0, 196, 255), 2)
+    # cv2.putText(image, text, (20, 110), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
+    # cv2.putText(image, f'Turn: {turn}', (300, 70), cv2.FONT_HERSHEY_PLAIN, 1, (0, 196, 255), 2)
 
     cv2.putText(image, f'FPS: {int(fps)}', (20, 70), cv2.FONT_HERSHEY_PLAIN, 3, (0, 196, 255), 2)
     cv2.imshow('MediaPipe FaceMesh', image)

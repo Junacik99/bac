@@ -5,9 +5,9 @@
         "bone_eye_R": "Eye_R",
         
         "multipliers": {
-            "head_rot": 2,
+            "head_rot": -2,
             "head_nod": -5,
-            "head_turn": -5,
+            "head_turn": 5,
             "eye_L_V": -1,
             "eye_L_H": -1,
             "eye_R_V": -1,
