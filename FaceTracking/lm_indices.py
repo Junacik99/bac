@@ -1,6 +1,9 @@
 # Identify landmarks indices
+nose = 1
 lips_upper = 13 #0
 lips_bottom = 14 #17
+lips_left = 291
+lips_right = 61
 face_upper = 10
 face_bottom = 152
 face_right = 234

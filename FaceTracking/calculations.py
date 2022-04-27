@@ -2,6 +2,7 @@
 import math
 import numpy as np
 import cv2
+import lm_indices as ids
 
 # Euclidean distance
 def eDist(pointA, pointB):
@@ -14,7 +15,7 @@ def get_nodturn(landmarks, img_w, img_h):
     face_2d = []
 
     for idx, lm in enumerate(landmarks):
-        if idx == 33 or idx == 263 or idx == 1 or idx == 61 or idx == 291 or idx == 199:
+        if idx == ids.eye_right_right or idx == ids.eye_left_left or idx == ids.nose or idx == ids.lips_right or idx == ids.lips_left or idx == ids.face_bottom:
             x, y = int(lm.x * img_w), int(lm.y * img_h)
             face_2d.append([x, y])
             face_3d.append([x, y, lm.z])
@@ -32,4 +33,4 @@ def get_nodturn(landmarks, img_w, img_h):
     rmat, jac = cv2.Rodrigues(rot_vec)
     angles, mtxR, mtxQ, Qx, Qy, Qz = cv2.RQDecomp3x3(rmat)
 
-    return angles[0], angles[1]
+    return angles[0], angles[1] # angles[2] is the rotation/roll
