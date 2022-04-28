@@ -52,7 +52,8 @@ with mp_face_mesh.FaceMesh(
       for face_landmarks in results.multi_face_landmarks:
         
         # Calculate how big is gap between lips
-        gap = abs(face_landmarks.landmark[ids.lips_upper].y - face_landmarks.landmark[ids.lips_bottom].y)
+        #gap = abs(face_landmarks.landmark[ids.lips_upper].y - face_landmarks.landmark[ids.lips_bottom].y)
+        gap = eDist(face_landmarks.landmark[ids.lips_upper], face_landmarks.landmark[ids.lips_bottom])
         
         # Calculate head Nod and Turn
         nod, turn = get_nodturn(face_landmarks.landmark, img_w, img_h)
