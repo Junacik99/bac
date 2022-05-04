@@ -25,6 +25,7 @@ drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 mode = load_arguments(sys.argv) # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
+print(f'Reading from camera - {mode}')
 
 # Read video input
 with mp_face_mesh.FaceMesh(
