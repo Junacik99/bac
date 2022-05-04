@@ -6,6 +6,8 @@ import asyncio
 import ws_client
 from calculations import eDist, get_nodturn
 import lm_indices as ids
+import sys
+from arg_loader import load_arguments
 
 # Init FaceMesh
 mp_drawing = mp.solutions.drawing_utils
@@ -13,7 +15,7 @@ mp_face_mesh = mp.solutions.face_mesh
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
 ## For webcam input:
-mode = 1 # int - webcam(0 - default) | 'filename' - video file
+mode = load_arguments(sys.argv) # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0
 
@@ -28,7 +30,7 @@ with mp_face_mesh.FaceMesh(
     if not success:
       print("Ignoring empty camera frame.")
       # If loading a video, use 'break' instead of 'continue'.
-      if mode == 0 or mode == 1:
+      if mode.isnumeric():
         continue
       else:
         break
