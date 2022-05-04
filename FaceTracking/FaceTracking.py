@@ -1,3 +1,10 @@
+#########################
+#     Martin Takács     #
+#       xtakac07        #
+# Face Tracking module  #
+# executable script for #
+#    face tracking      #
+#########################
 import cv2
 import mediapipe as mp
 import time
@@ -14,7 +21,7 @@ mp_drawing = mp.solutions.drawing_utils
 mp_face_mesh = mp.solutions.face_mesh
 drawing_spec = mp_drawing.DrawingSpec(thickness=1, circle_radius=1)
 
-## For webcam input:
+## Select input mode (webcam/video):
 mode = load_arguments(sys.argv) # int - webcam(0 - default) | 'filename' - video file
 cap = cv2.VideoCapture(mode)  
 prevTime = 0

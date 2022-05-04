@@ -1,3 +1,11 @@
+#########################
+#     Martin Takács     #
+#       xtakac07        #
+#     Websocket server  #
+# executable script for #
+#       websockets      #
+#########################
+
 import asyncio
 import websockets
 
@@ -8,7 +16,7 @@ async def msg_handler(websocket):
     try:
         # Register user
         USERS.add(websocket)
-        # Broadcast messasge
+        # Broadcast incoming messages from the registered user
         async for message in websocket:
             # print(message)
             websockets.broadcast(USERS, message)
@@ -20,6 +28,7 @@ async def msg_handler(websocket):
 
 async def main():
     print("Starting websocket server")
+    # The port number is always 8765
     server1 = await websockets.serve(msg_handler, '', 8765)
     await asyncio.gather(server1.wait_closed())
 

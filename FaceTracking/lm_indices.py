@@ -1,4 +1,5 @@
 # Identify landmarks indices
+# indecis as constatns
 nose = 1
 lips_upper = 13 #0
 lips_bottom = 14 #17
