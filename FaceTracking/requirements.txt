@@ -2,4 +2,4 @@ opencv-python==4.5.5.64
 mediapipe==0.8.9.1
 asyncio==3.4.3
 websockets==10.3
-numpy==1.19.5
+numpy==1.21.0
