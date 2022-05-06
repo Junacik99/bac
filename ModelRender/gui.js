@@ -1,6 +1,6 @@
 // Script for Managing GUI elements
 
-import { GUI } from './node_modules/dat.gui/build/dat.gui.module.js'
+import { GUI } from './dat.gui-master/build/dat.gui.module.js'
 import { select_avatar, select_bg, set_front_light, set_back_light } from './index.js'
 
 const gui = new GUI()

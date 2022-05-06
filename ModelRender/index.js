@@ -37,7 +37,8 @@ let camera_offsetY
 
 ///////////////////////////////////////////////////////
 // WebSocket
-let socket = new WebSocket("ws://127.0.0.1:8765");
+const ws_address = "ws://127.0.0.1:8765"
+let socket = new WebSocket(ws_address);
 
 socket.onopen = function(e) {
     console.log('Connection to ws server established')

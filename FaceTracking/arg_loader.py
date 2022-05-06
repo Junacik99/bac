@@ -1,7 +1,4 @@
 # Arguments loader
-from ast import arg
-import sys
-
 
 # Returns the first cmd argument as a mode for face tracking
 # If no arguments are given, default webcam will be used

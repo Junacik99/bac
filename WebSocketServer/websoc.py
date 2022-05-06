@@ -10,6 +10,7 @@ import asyncio
 import websockets
 
 USERS = set()
+port = 8765
 
 async def msg_handler(websocket):
     global USERS
@@ -29,7 +30,7 @@ async def msg_handler(websocket):
 async def main():
     print("Starting websocket server")
     # The port number is always 8765
-    server1 = await websockets.serve(msg_handler, '', 8765)
+    server1 = await websockets.serve(msg_handler, '', port)
     await asyncio.gather(server1.wait_closed())
 
 

@@ -1,6 +1,6 @@
 /ModelRender/three.js-master
 /ModelRender/package-lock.json
 /ModelRender/assets
-/ModelRender/node_modules
+/ModelRender/dat.gui-master
 
 /FaceTracking/__pycache__
