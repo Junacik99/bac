@@ -2,7 +2,7 @@
 xtakac07
 
 This project presents an application for animating 3D avatar based on a single camera or video input of human face in real time. 
-  The resulting application consists of three modules -- face tracking, avatar animator, and a server for transferring face data. The face tracking module computes new transforms for the animation from human face and benefits from Mediapipe's Facemesh to estimatate the current face geometry. 
+  The resulting application consists of three modules -- face tracking, avatar animator, and a server for transferring face data. The face tracking module computes new transforms for the animation from human face and benefits from Mediapipe's Facemesh to estimate the current face geometry. 
   Avatar animator module is a web-based application for rendering and animating 3D avatars through skeletal animations, based on the Three.js library. 
   Both modules make use of the continuous bidirectional communication of websockets through the single server.
   Performance of the face tracking module depends on the camera and device on which it is running, but regular web camera is usually enough for speed of `30+` FPS and animation runs at the speed of `60+` FPS with multiple avatars.
