@@ -7,6 +7,9 @@ This project presents an application for animating 3D avatar based on a single c
   Both modules make use of the continuous bidirectional communication of websockets through the single server.
   Performance of the face tracking module depends on the camera and device on which it is running, but regular web camera is usually enough for speed of `30+` FPS and animation runs at the speed of `60+` FPS with multiple avatars.
 
+<a href="https://youtu.be/NmKobSX5TTI" target="_blank"><img src="http://img.youtube.com/vi/NmKobSX5TTI/0.jpg" 
+alt="Demo video of the project" width="240" height="180" border="10" /></a>
+
 ## Installation Guide and User Manual
 To install the current version of the project, navigate to [my repo](https://github.com/Junacik99/bac) and clone or download the repository. Steps for installing individual modules are explained in the following sections.
 
